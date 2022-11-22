@@ -6,12 +6,14 @@ export interface ModalProps extends ModalContextProps {
 }
 
 export interface ModalContextType {
+  /** Keys of all modal windows that are currently displayed. */
+  visibleModals: Array<string>;
   /** Hides modal on per-key basis. */
-  hideModal(key: string): void;
+  closeModal(key: string): void;
   /** Removes all windows. */
-  hideAllModals(): void;
-  /** Opens modal on per-key basis and passes props. */
-  showModal(key: string, props: ModalContextProps): void;
+  closeAllModals(): void;
+  /** Shows modal on per-key basis and passes props. */
+  openModal(key: string, props: ModalContextProps): void;
   /** Collection of windows to render.
    *
    *  `Warning`: Required only if `disableDefaultRootPlacement=true` has been passed to the context.

@@ -31,22 +31,22 @@ export function ModalContextProvider({
 
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  function hideModal(key: string) {
+  function closeModal(key: string) {
     setVisibleModals((prev) => prev.filter((x) => x !== key));
   }
 
-  function hideAllModals() {
+  function closeAllModals() {
     setVisibleModals([]);
   }
 
-  function hideCurrentModal() {
+  function closeCurrentModal() {
     const elementToHide =
       visibleModalsRef.current[visibleModalsRef.current.length - 1];
     modalPropsRef.current.get(elementToHide)?.closable === true &&
-      hideModal(elementToHide);
+      closeModal(elementToHide);
   }
 
-  function showModal(key: string, props: ModalContextProps) {
+  function openModal(key: string, props: ModalContextProps) {
     setModalProps((prev) => {
       const modalPropsCopy = new Map(prev);
       modalPropsCopy.set(key, props);
@@ -60,8 +60,10 @@ export function ModalContextProvider({
     });
   }
 
+  // function openModal() {}
+
   useDetectKeyPress((key) => {
-    if (key === "Escape") hideCurrentModal();
+    if (key === "Escape") closeCurrentModal();
   });
 
   const modalWindows = useMemo(
@@ -74,7 +76,7 @@ export function ModalContextProvider({
           return {
             key,
             ...defaultProps,
-            onCancel: () => hideModal(key),
+            onCancel: () => closeModal(key),
             visible: visibleModals.find((x) => x === key) !== undefined,
             orderNumber: visibleModals.findIndex((x) => x === key),
             modalKey: key,
@@ -87,10 +89,11 @@ export function ModalContextProvider({
   );
 
   const contextProps: ModalContextType = {
-    hideModal,
-    showModal,
-    hideAllModals,
+    closeModal,
+    openModal,
+    closeAllModals,
     modalWindows,
+    visibleModals,
   };
 
   const ModalWindowsContainer = !defaultProps?.disableDefaultRootPlacement && (
