@@ -1,4 +1,4 @@
-import { StringExtensions } from "../components/extensions/String";
+import { StringExtensions } from "../extensions/String";
 
 export const concatStyles = (...args: (string | boolean | undefined)[]) =>
   args

@@ -18,7 +18,9 @@ export function ModalContextProvider({
   children: React.ReactNode;
 }) {
   const [visibleModals, setVisibleModals] = useState<Array<string>>([]);
-
+  const [minimizedWindows, setMinimizedWindows] = useState<Set<string>>(
+    new Set()
+  );
   const [modalProps, setModalProps] = useState<Map<string, ModalContextProps>>(
     new Map()
   );
@@ -30,6 +32,18 @@ export function ModalContextProvider({
   modalPropsRef.current = modalProps;
 
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  function minimizeModal(key: string) {
+    setMinimizedWindows((prev) => new Set(prev).add(key));
+  }
+
+  function maximizeModal(key: string) {
+    setMinimizedWindows((prev) => {
+      const stateCopy = new Set(prev);
+      stateCopy.delete(key);
+      return stateCopy;
+    });
+  }
 
   function closeModal(key: string) {
     setVisibleModals((prev) => prev.filter((x) => x !== key));
@@ -60,8 +74,6 @@ export function ModalContextProvider({
     });
   }
 
-  // function openModal() {}
-
   useDetectKeyPress((key) => {
     if (key === "Escape") closeCurrentModal();
   });
@@ -72,26 +84,35 @@ export function ModalContextProvider({
         .map((el) => {
           const key = el[0];
           const props = el[1];
-
+          const orderNumber = visibleModals.findIndex((x) => x === key);
           return {
             key,
             ...defaultProps,
-            onCancel: () => closeModal(key),
-            visible: visibleModals.find((x) => x === key) !== undefined,
+            handleCancel: () => closeModal(key),
+            handleMinimize: () => minimizeModal(key),
+            handleMaximize: () => maximizeModal(key),
+            visible: visibleModals[orderNumber] !== undefined,
             orderNumber: visibleModals.findIndex((x) => x === key),
             modalKey: key,
+            minimized: minimizedWindows.has(key),
             ...props,
           };
         })
         .sort((a, b) => (a.orderNumber ?? 0) - (b.orderNumber ?? 0))
         .map((props) => <D_MODAL ref={modalRef} {...props} />),
-    [modalProps, visibleModals]
+    [modalProps, visibleModals, minimizedWindows]
   );
+
+  // const minimizedModalWindows = useMemo(() => {
+  //   visibleModals.map(x=>)
+  // }, []);
 
   const contextProps: ModalContextType = {
     closeModal,
     openModal,
     closeAllModals,
+    minimizeModal,
+    maximizeModal,
     modalWindows,
     visibleModals,
   };

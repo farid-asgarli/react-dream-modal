@@ -1,8 +1,11 @@
 export interface ModalProps extends ModalContextProps {
   visible: boolean;
-  onCancel: () => void;
+  handleCancel: () => void;
+  handleMinimize: () => void;
+  handleMaximize: () => void;
   modalKey?: string;
   orderNumber?: number;
+  minimized: boolean;
 }
 
 export interface ModalContextType {
@@ -19,18 +22,24 @@ export interface ModalContextType {
    *  `Warning`: Required only if `disableDefaultRootPlacement=true` has been passed to the context.
    */
   modalWindows: JSX.Element[];
+  minimizeModal(key: string): void;
+  maximizeModal(key: string): void;
 }
 
 export interface ModalContextProps {
   /** Render custom header in the modal window. */
   renderHeader?: (
     /** Utility function to close modal window. */
-    handleClose: () => void
+    handleClose: () => void,
+    handleMinimize: () => void,
+    handleMaximize: () => void
   ) => React.ReactNode;
   /** Render custom footer in the modal window. */
   renderFooter?: (
     /** Utility function to close modal window. */
-    handleClose: () => void
+    handleClose: () => void,
+    handleMinimize: () => void,
+    handleMaximize: () => void
   ) => React.ReactNode;
   /** Title to display in the modal's header. */
   title?: string | undefined;
@@ -50,6 +59,7 @@ export interface ModalContextProps {
   resizable?: boolean;
   /** Dictates whether the user can close the window. */
   closable?: boolean;
+  minimizable?: boolean;
   /** Displays modal background. */
   displayMask?: boolean;
   /** Default 'div' html props to pass. */
