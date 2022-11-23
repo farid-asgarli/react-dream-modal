@@ -22,7 +22,9 @@ export interface ModalContextType {
    *  `Warning`: Required only if `disableDefaultRootPlacement=true` has been passed to the context.
    */
   modalWindows: JSX.Element[];
+  /** Grants the ability to minimize modal window. */
   minimizeModal(key: string): void;
+  /** Grants the ability to maximize modal window. */
   maximizeModal(key: string): void;
 }
 
@@ -31,14 +33,18 @@ export interface ModalContextProps {
   renderHeader?: (
     /** Utility function to close modal window. */
     handleClose: () => void,
+    /** Utility function to minimize modal window. */
     handleMinimize: () => void,
+    /** Utility function to maximize modal window. */
     handleMaximize: () => void
   ) => React.ReactNode;
   /** Render custom footer in the modal window. */
   renderFooter?: (
     /** Utility function to close modal window. */
     handleClose: () => void,
+    /** Utility function to minimize modal window. */
     handleMinimize: () => void,
+    /** Utility function to maximize modal window. */
     handleMaximize: () => void
   ) => React.ReactNode;
   /** Title to display in the modal's header. */
@@ -59,6 +65,7 @@ export interface ModalContextProps {
   resizable?: boolean;
   /** Dictates whether the user can close the window. */
   closable?: boolean;
+  /** Dictates whether the user can minimize the window. */
   minimizable?: boolean;
   /** Displays modal background. */
   displayMask?: boolean;
