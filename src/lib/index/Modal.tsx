@@ -19,6 +19,8 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
       handleCancel,
       handleMinimize,
       handleMaximize,
+      customCancelButton,
+      customOkButton,
       body,
       title,
       cancelButtonProps,
@@ -33,13 +35,14 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
       closable = true,
       displayMask = true,
       position = {
-        x: "50%",
-        y: "50%",
+        left: "50%",
+        top: "50%",
       },
       htmlProps,
       animationDuration = 250,
       minimized,
       minimizable,
+      baseZIndex = 1500,
     },
     ref
   ) => {
@@ -48,7 +51,9 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
         return renderHeader?.(handleCancel, handleMinimize, handleMaximize);
       return (
         <>
-          <h3 className="modal-header-title">{title}</h3>
+          <h3 title={title} className="modal-header-title">
+            {title}
+          </h3>
           <div className="modal-header-button-wrapper">
             {minimizable && (
               <button
@@ -80,30 +85,47 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
     }, [renderHeader, title, minimized]);
 
     const style: React.CSSProperties = {
-      zIndex: `${1000 + (orderNumber ?? 0)}`,
+      zIndex: `${baseZIndex + (orderNumber ?? 0)}`,
     };
 
     const displayFooter = useMemo(() => {
       if (renderFooter)
         return renderFooter?.(handleCancel, handleMinimize, handleMaximize);
+
+      const cancelButtonAttrs: React.ButtonHTMLAttributes<HTMLButtonElement> = {
+        type: "button",
+        onClick: closable ? handleCancel : undefined,
+        ...cancelButtonProps,
+      };
+      const okButtonAttrs: React.ButtonHTMLAttributes<HTMLButtonElement> = {
+        type: "button",
+        ...okButtonProps,
+      };
+
       return (
         <div className="modal-footer-bottom">
-          <button
-            type="button"
-            title="Cancel"
-            className="modal-button cancel-button"
-            onClick={closable ? handleCancel : undefined}
-            {...cancelButtonProps}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="modal-button ok-button"
-            {...okButtonProps}
-          >
-            Ok
-          </button>
+          {customCancelButton ? (
+            React.cloneElement(customCancelButton, cancelButtonAttrs)
+          ) : (
+            <button
+              className="modal-button cancel-button"
+              title="Cancel"
+              {...cancelButtonAttrs}
+            >
+              Cancel
+            </button>
+          )}
+          {customOkButton ? (
+            React.cloneElement(customOkButton, okButtonAttrs)
+          ) : (
+            <button
+              className="modal-button ok-button"
+              type="button"
+              {...okButtonProps}
+            >
+              Ok
+            </button>
+          )}
         </div>
       );
     }, [cancelButtonProps, okButtonProps, renderFooter]);
@@ -111,14 +133,19 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
     const displayDialog = (
       <div
         {...htmlProps}
-        style={{ ...style, ...htmlProps?.style }}
+        style={{
+          ...style,
+          ...htmlProps?.style,
+          top: position.top,
+          left: position.left,
+        }}
         className={concatStyles("dream-modal-dialog", htmlProps?.className)}
       >
         <div
           key={modalKey}
           style={{
-            width,
-            height,
+            width: minimized ? 150 : width,
+            height: minimized ? 25 : height,
           }}
           ref={ref}
           className={concatStyles("modal-body", resizable && "resizable")}
@@ -158,7 +185,7 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
           />
         )}
         <Draggable
-          positionOffset={{ x: `-${position.x}`, y: `-${position.y}` }}
+          positionOffset={{ x: `-50%`, y: `-50%` }}
           disabled={!(draggable || minimized)}
           handle={`.modal-header`}
           position={!minimized && !draggable ? { x: 0, y: 0 } : undefined}

@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface ModalProps extends ModalContextProps {
   visible: boolean;
   handleCancel: () => void;
@@ -29,6 +31,10 @@ export interface ModalContextType {
 }
 
 export interface ModalContextProps {
+  /** Display custom `ok` button in the modal window. */
+  customOkButton?: JSX.Element | undefined;
+  /** Display custom `cancel` button in the modal window. */
+  customCancelButton?: JSX.Element | undefined;
   /** Render custom header in the modal window. */
   renderHeader?: (
     /** Utility function to close modal window. */
@@ -74,14 +80,18 @@ export interface ModalContextProps {
   /** Initial position of the modal window. */
   position?: {
     /** X (horizontal) axis value. Default is 50%. */
-    x?: string;
+    top?: string;
     /** Y (vertical) axis value. Default is 50%. */
-    y?: string;
+    left?: string;
   };
   /** Animation duration in `ms`.
    *
    * Default is `250`.  */
   animationDuration?: number;
+  /** Default z-index in modal windows.
+   *
+   * Default is `1500`. */
+  baseZIndex?: number;
 }
 
 export interface DefaultModalContextProps extends ModalContextProps {

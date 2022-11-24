@@ -7,7 +7,9 @@ import {
   ModalContextProps,
   DefaultModalContextProps,
   ModalContextType,
+  ModalProps,
 } from "../types/Modal";
+import { concatStyles } from "../utils/ConcatStyles";
 
 export function ModalContextProvider({
   children,
@@ -85,9 +87,34 @@ export function ModalContextProvider({
           const key = el[0];
           const props = el[1];
           const orderNumber = visibleModals.findIndex((x) => x === key);
-          return {
+
+          const modalProps: ModalProps & { key: string } = {
             key,
             ...defaultProps,
+            okButtonProps: {
+              ...defaultProps?.okButtonProps,
+              ...props.okButtonProps,
+              className: concatStyles(
+                defaultProps?.okButtonProps?.className,
+                props.okButtonProps?.className
+              ),
+            },
+            cancelButtonProps: {
+              ...defaultProps?.cancelButtonProps,
+              ...props.cancelButtonProps,
+              className: concatStyles(
+                defaultProps?.cancelButtonProps?.className,
+                props.cancelButtonProps?.className
+              ),
+            },
+            htmlProps: {
+              ...defaultProps?.htmlProps,
+              ...props.htmlProps,
+              className: concatStyles(
+                defaultProps?.htmlProps?.className,
+                props.htmlProps?.className
+              ),
+            },
             handleCancel: () => closeModal(key),
             handleMinimize: () => minimizeModal(key),
             handleMaximize: () => maximizeModal(key),
@@ -97,15 +124,12 @@ export function ModalContextProvider({
             minimized: minimizedWindows.has(key),
             ...props,
           };
+          return modalProps;
         })
         .sort((a, b) => (a.orderNumber ?? 0) - (b.orderNumber ?? 0))
         .map((props) => <D_MODAL ref={modalRef} {...props} />),
     [modalProps, visibleModals, minimizedWindows]
   );
-
-  // const minimizedModalWindows = useMemo(() => {
-  //   visibleModals.map(x=>)
-  // }, []);
 
   const contextProps: ModalContextType = {
     closeModal,

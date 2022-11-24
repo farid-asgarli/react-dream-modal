@@ -1,5 +1,9 @@
 /* .dream-modal-root.minimized {
 } */
+.dream-modal-container {
+  position: relative;
+  z-index: 1;
+}
 
 .dream-modal-root.minimized :where(.modal-content, .modal-footer) {
   display: none;
@@ -10,6 +14,7 @@
   resize: unset;
   overflow: unset;
   width: 150px !important;
+  padding: 10px 15px;
 }
 
 .dream-modal-dialog {
@@ -19,6 +24,10 @@
   left: 50%;
   padding-bottom: 0;
   text-align: start;
+}
+
+.dream-modal-root.minimized .dream-modal-dialog .modal-header {
+  padding-bottom: 0;
 }
 
 .dream-modal-root .modal-header {
@@ -69,6 +78,7 @@
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
+  /* transition: 0.2s ease-in-out width, 0.2s ease-in-out height; */
 }
 
 .dream-modal-root.minimized .modal-body {
@@ -91,7 +101,7 @@
   gap: 10px;
 }
 
-.modal-footer-bottom button.modal-button {
+/* .modal-footer-bottom button.modal-button {
   background-color: #ffffff;
   box-shadow: 0 2px 0 rgb(0 0 0 / 2%);
   font-size: 14px;
@@ -115,7 +125,7 @@
 .modal-footer-bottom button.modal-button:hover {
   color: #4096ff;
   border-color: #4096ff;
-}
+} */
 
 .modal-header-button-wrapper {
   display: flex;
@@ -123,7 +133,7 @@
 }
 
 .modal-header-button-wrapper .close-button {
-  z-index: 1010;
+  z-index: inherit;
   padding: 0;
   color: rgba(0, 0, 0, 0.45);
   font-weight: 600;
