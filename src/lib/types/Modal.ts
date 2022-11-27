@@ -28,6 +28,13 @@ export interface ModalContextType {
   minimizeModal(key: string): void;
   /** Grants the ability to maximize modal window. */
   maximizeModal(key: string): void;
+  /** Allows the ability to modify props of the active modal window. */
+  updateModal(
+    key: string,
+    updateProps: (props: ModalContextProps) => ModalContextProps
+  ): void;
+  /** Immediately closes modal window and removes its content. */
+  destroyModal(key: string): void;
 }
 
 export interface ModalContextProps {
@@ -92,6 +99,10 @@ export interface ModalContextProps {
    *
    * Default is `1500`. */
   baseZIndex?: number;
+  /** Initiates when modal window is closed. */
+  onWindowClose?: () => void;
+  /** Initiates when modal window is opened. */
+  onWindowOpen?: () => void;
 }
 
 export interface DefaultModalContextProps extends ModalContextProps {

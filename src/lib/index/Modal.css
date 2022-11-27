@@ -179,4 +179,5 @@
 
 .modal-content {
   margin: 20px 0;
+  overflow-y: auto;
 }

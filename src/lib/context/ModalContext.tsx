@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { createContext } from "react";
 import { useContext, useMemo, useRef, useState } from "react";
-import { D_MODAL, ModalContext } from "../index/Modal";
+import { D_MODAL } from "../index/Modal";
 import { useDetectKeyPress } from "../hooks/detectKeyPress";
 import {
   ModalContextProps,
@@ -10,6 +10,8 @@ import {
   ModalProps,
 } from "../types/Modal";
 import { concatStyles } from "../utils/ConcatStyles";
+
+export const ModalContext = createContext<ModalContextType | null>(null);
 
 export function ModalContextProvider({
   children,
@@ -53,6 +55,30 @@ export function ModalContextProvider({
 
   function closeAllModals() {
     setVisibleModals([]);
+  }
+
+  function destroyModal(key: string) {
+    setModalProps((prev) => {
+      const stateCopy = new Map(prev);
+      stateCopy.delete(key);
+      return stateCopy;
+    });
+  }
+
+  function updateModal(
+    key: string,
+    updateProps: (props: ModalContextProps) => ModalContextProps
+  ) {
+    setModalProps((prev) => {
+      const entryToUpdate = prev.get(key);
+      if (entryToUpdate) {
+        const updatedProps = new Map(prev).set(key, updateProps(entryToUpdate));
+        console.log(updatedProps);
+
+        return updatedProps;
+      }
+      return prev;
+    });
   }
 
   function closeCurrentModal() {
@@ -137,6 +163,8 @@ export function ModalContextProvider({
     closeAllModals,
     minimizeModal,
     maximizeModal,
+    updateModal,
+    destroyModal,
     modalWindows,
     visibleModals,
   };

@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import Draggable from "react-draggable";
 import Fade from "../components/Fade/Fade";
 import Close from "../icons/Close";
 import Maximize from "../icons/Maximize";
 import Minimize from "../icons/Minimize";
-import { ModalContextType, ModalProps } from "../types/Modal";
+import { ModalProps } from "../types/Modal";
 import { concatStyles } from "../utils/ConcatStyles";
 import "./Modal.css";
-
-export const ModalContext = createContext<ModalContextType | null>(null);
 
 export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
   (
@@ -43,9 +41,17 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
       minimized,
       minimizable,
       baseZIndex = 1500,
+      onWindowClose,
+      onWindowOpen,
     },
     ref
   ) => {
+    function animationHandler(visible: boolean) {
+      if (visible === false && minimized) handleMaximize();
+      if (visible) onWindowOpen?.();
+      else onWindowClose?.();
+    }
+
     const displayHeader = useMemo(() => {
       if (renderHeader && !minimized)
         return renderHeader?.(handleCancel, handleMinimize, handleMaximize);
@@ -172,9 +178,7 @@ export const D_MODAL = React.forwardRef<HTMLDivElement, ModalProps>(
           closable && "closable",
           minimized && "minimized"
         )}
-        onAnimationFinish={(visible) => {
-          if (visible === false && minimized) handleMaximize();
-        }}
+        onAnimationFinish={animationHandler}
         duration={animationDuration}
       >
         {!minimized && displayMask && (
