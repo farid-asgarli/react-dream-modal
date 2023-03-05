@@ -2,9 +2,10 @@
   --dialog-mask-background: rgba(0, 0, 0, 0.4);
   --dialog-content-background: #fff;
   --dialog-icon-color: #6c757d;
-  --dialog-primary-color: #c7d2fe;
+  --dialog-primary-color: #cdced0;
   --dialog-header-text-color: #343a40;
   --dialog-content-color: #495057;
+  --dialog-danger-color: #b80a47;
 }
 
 .dialog-mask {
@@ -111,11 +112,26 @@
             margin-right: 0;
             text-align: left;
           }
+          &.dialog-header-close {
+            &:hover {
+              .dialog-header-icon {
+                fill: var(--dialog-danger-color);
+                color: var(--dialog-danger-color);
+              }
+            }
+            &:focus {
+              .dialog-header-icon {
+                fill: var(--dialog-danger-color);
+                color: var(--dialog-danger-color);
+              }
+            }
+          }
           .dialog-header-icon {
             width: 25px;
             font-size: 25px;
             fill: var(--dialog-icon-color);
             color: var(--dialog-icon-color);
+            transition: 0.2s color ease-out, 0.2s fill ease-out;
           }
         }
       }
@@ -163,7 +179,7 @@
       width: 200px;
       min-width: 200px;
       max-width: 200px;
-
+      height: auto !important;
       .dialog-header {
         padding: 1rem;
         border-radius: 6px;

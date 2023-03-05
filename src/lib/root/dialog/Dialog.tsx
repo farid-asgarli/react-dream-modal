@@ -179,7 +179,7 @@ export function Dialog(inProps: DialogProps) {
       const height = DomHandler.getOuterHeight(dialogRef.current);
       const deltaX = event.pageX - lastPageX.current!;
       const deltaY = event.pageY - lastPageY.current!;
-      const offset = dialogRef.current!.getBoundingClientRect();
+      const offset = dialogRef.current.getBoundingClientRect();
       const leftPos = offset.left + deltaX;
       const topPos = offset.top + deltaY;
       const viewport = DomHandler.getViewport();
@@ -284,10 +284,11 @@ export function Dialog(inProps: DialogProps) {
   };
 
   const resetPosition = () => {
-    dialogRef.current!.style.position = "";
-    dialogRef.current!.style.left = "";
-    dialogRef.current!.style.top = "";
-    dialogRef.current!.style.margin = "";
+    if (!dialogRef.current) return;
+    dialogRef.current.style.position = "";
+    dialogRef.current.style.left = "";
+    dialogRef.current.style.top = "";
+    dialogRef.current.style.margin = "";
   };
 
   const getPositionClass = () => {
@@ -308,7 +309,8 @@ export function Dialog(inProps: DialogProps) {
   };
 
   const onEnter = () => {
-    dialogRef.current!.setAttribute(attributeSelector.current, "");
+    if (!dialogRef.current) return;
+    dialogRef.current.setAttribute(attributeSelector.current, "");
   };
 
   const onEntered = () => {
